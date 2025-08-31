@@ -1,0 +1,222 @@
+{
+  "test_cases": [
+    {
+      "name": "test_search_videos_basic",
+      "tool": "search_videos",
+      "arguments": {
+        "query": "python programming tutorial"
+      },
+      "description": "Test basic video search with query only",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_videos_with_page_token",
+      "tool": "search_videos",
+      "arguments": {
+        "query": "machine learning",
+        "pageToken": "CAUQAA"
+      },
+      "description": "Test video search with page token for pagination",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_videos_empty_query",
+      "tool": "search_videos",
+      "arguments": {
+        "query": ""
+      },
+      "description": "Test video search with empty query (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_videos_whitespace_query",
+      "tool": "search_videos",
+      "arguments": {
+        "query": "   "
+      },
+      "description": "Test video search with whitespace-only query (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_get_videos_single_id_default_parts",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": ["dQw4w9WgXcQ"]
+      },
+      "description": "Test getting single video with default parts (snippet)",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_videos_multiple_ids_multiple_parts",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": ["dQw4w9WgXcQ", "9bZkp7q19f0"],
+        "parts": ["snippet", "contentDetails", "statistics"]
+      },
+      "description": "Test getting multiple videos with multiple parts",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_videos_empty_ids",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": []
+      },
+      "description": "Test getting videos with empty ID list (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_get_videos_invalid_parts",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": ["dQw4w9WgXcQ"],
+        "parts": ["snippet", "invalid_part"]
+      },
+      "description": "Test getting videos with invalid parts (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_get_videos_too_many_ids",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": [
+          "id1",
+          "id2",
+          "id3",
+          "id4",
+          "id5",
+          "id6",
+          "id7",
+          "id8",
+          "id9",
+          "id10",
+          "id11",
+          "id12",
+          "id13",
+          "id14",
+          "id15",
+          "id16",
+          "id17",
+          "id18",
+          "id19",
+          "id20",
+          "id21",
+          "id22",
+          "id23",
+          "id24",
+          "id25",
+          "id26",
+          "id27",
+          "id28",
+          "id29",
+          "id30",
+          "id31",
+          "id32",
+          "id33",
+          "id34",
+          "id35",
+          "id36",
+          "id37",
+          "id38",
+          "id39",
+          "id40",
+          "id41",
+          "id42",
+          "id43",
+          "id44",
+          "id45",
+          "id46",
+          "id47",
+          "id48",
+          "id49",
+          "id50",
+          "id51"
+        ]
+      },
+      "description": "Test getting videos with too many IDs (should fail - max 50)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_get_videos_all_parts",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": ["dQw4w9WgXcQ"],
+        "parts": ["snippet", "contentDetails", "statistics", "status"]
+      },
+      "description": "Test getting video with multiple valid parts",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_transcript_valid_id",
+      "tool": "get_transcript",
+      "arguments": {
+        "videoId": "dQw4w9WgXcQ"
+      },
+      "description": "Test getting transcript for valid video ID",
+      "expected_fields": ["videoId", "transcript", "available", "language"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_transcript_with_language",
+      "tool": "get_transcript",
+      "arguments": {
+        "videoId": "dQw4w9WgXcQ",
+        "language": "en"
+      },
+      "description": "Test getting transcript with specific language preference",
+      "expected_fields": ["videoId", "transcript", "available", "language"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_transcript_empty_id",
+      "tool": "get_transcript",
+      "arguments": {
+        "videoId": ""
+      },
+      "description": "Test getting transcript with empty video ID (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_get_transcript_whitespace_id",
+      "tool": "get_transcript",
+      "arguments": {
+        "videoId": "   "
+      },
+      "description": "Test getting transcript with whitespace-only video ID (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_videos_specific_topic",
+      "tool": "search_videos",
+      "arguments": {
+        "query": "React hooks tutorial"
+      },
+      "description": "Test video search for specific programming topic",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_get_videos_content_details_only",
+      "tool": "get_videos",
+      "arguments": {
+        "ids": ["dQw4w9WgXcQ"],
+        "parts": ["contentDetails"]
+      },
+      "description": "Test getting video with only contentDetails part",
+      "expected_fields": ["items", "pageInfo"],
+      "should_succeed": true
+    }
+  ]
+}

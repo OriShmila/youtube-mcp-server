@@ -1,0 +1,287 @@
+# YouTube MCP Server Rules
+
+## 🎯 Purpose
+This document provides development guidelines for the **YouTube MCP Server** - a Model Context Protocol server that integrates with YouTube Data API v3 and provides video search, detailed video information, and transcript extraction capabilities.
+
+## 🏗️ Architecture Overview
+
+### Server Structure
+```
+youtube-mcp-server/
+├── youtube_mcp_server/          # Main package (renamed from mcp_server)
+│   ├── server.py               # MCP server implementation
+│   ├── handlers.py             # Tool function implementations
+│   ├── tools.json              # Tool schema definitions (3 tools)
+│   ├── __main__.py             # Entry point
+│   └── __init__.py             # Package initialization
+├── test_cases.json             # 16 comprehensive test cases
+├── test_server.py              # Test suite with schema validation
+├── main.py                     # Development entry point
+└── pyproject.toml              # Project configuration
+```
+
+### 3 Core Tools Implemented
+
+1. **`search_videos`**: Search YouTube videos with pagination
+2. **`get_videos`**: Get detailed video information for specific IDs  
+3. **`get_transcript`**: Extract video transcripts with language prioritization
+
+## 🔧 Development Guidelines
+
+### 1. Tool Implementation Pattern
+
+All tools follow this established pattern in `handlers.py`:
+
+```python
+async def tool_function(param1: str, param2: type = None) -> Dict[str, Any]:
+    """Tool description with comprehensive error handling."""
+    # 1. Input validation
+    if not param1 or not param1.strip():
+        raise ValueError("param1 is required and cannot be empty")
+    
+    # 2. API service initialization
+    youtube = build_youtube_service()  # or api = YouTubeTranscriptApi()
+    
+    # 3. API calls with error handling
+    try:
+        response = youtube.method().execute()
+        # Process response
+        return formatted_result
+    except HttpError as e:
+        # Handle YouTube API errors
+        raise ValueError(f"YouTube API error: {error_message}")
+    except Exception as e:
+        # Handle unexpected errors
+        raise ValueError(f"Unexpected error: {str(e)}")
+```
+
+### 2. Schema Definitions
+
+All schemas are defined in `youtube_mcp_server/tools.json`:
+
+- **Input schemas**: Define required/optional parameters with proper types
+- **Output schemas**: Define expected response structure
+- **Validation**: Full JSON Schema validation for all inputs/outputs
+
+### 3. Error Handling Strategy
+
+The server implements comprehensive error handling:
+
+- **API Key Validation**: Check `YOUTUBE_API_KEY` environment variable
+- **Input Validation**: Validate all parameters against schemas
+- **API Error Handling**: Handle YouTube API quota, network, and permission errors
+- **Graceful Degradation**: Return meaningful error messages to users
+
+### 4. Testing Requirements
+
+All changes must pass the comprehensive test suite:
+
+```bash
+uv run python test_server.py
+```
+
+- **16 test cases** covering all tools and error conditions
+- **Schema validation** for all inputs and outputs
+- **Real API integration** testing
+- **100% success rate** required
+
+## 📋 Tool-Specific Guidelines
+
+### `search_videos` Tool
+
+**Purpose**: Search YouTube videos with pagination support
+
+**Key Implementation Details**:
+- Uses YouTube Data API v3 `search().list()` method
+- Supports `pageToken` for pagination
+- Returns video snippets with basic information
+- Quota cost: 100 units per search
+
+**Critical Code**:
+```python
+search_params = {
+    "q": query.strip(),
+    "part": "snippet", 
+    "type": "video",
+    "maxResults": 10,
+    "order": "relevance"
+}
+```
+
+### `get_videos` Tool
+
+**Purpose**: Get comprehensive video information for specific video IDs
+
+**Key Implementation Details**:
+- Uses YouTube Data API v3 `videos().list()` method
+- Supports multiple `parts` for different data types
+- Handles up to 50 video IDs per request
+- Includes duration parsing (ISO 8601 to seconds)
+- Quota cost: 1 unit per video
+
+**Critical Code**:
+```python
+videos_response = youtube.videos().list(
+    part=",".join(parts), 
+    id=",".join(ids)
+).execute()
+```
+
+### `get_transcript` Tool
+
+**Purpose**: Extract video transcripts with intelligent language handling
+
+**Key Implementation Details**:
+- Uses `youtube-transcript-api` library (separate from YouTube Data API)
+- Implements language priority: requested → English → manual → any
+- Handles all transcript-related exceptions gracefully
+- No YouTube API quota cost
+
+**Language Priority Logic**:
+```python
+# 1. Try requested language first (if provided)
+if language and language.strip():
+    transcript = transcript_list.find_transcript([language.strip()])
+
+# 2. Try English fallback
+if transcript is None:
+    transcript = transcript_list.find_transcript(["en"])
+
+# 3. Try manual transcripts (preferred over auto-generated)
+# 4. Use any available transcript
+```
+
+## 🔑 Environment Configuration
+
+### Required Environment Variables
+
+```bash
+# YouTube Data API v3 Key (required)
+YOUTUBE_API_KEY=your_youtube_api_key_here
+
+# Optional debug mode
+DEBUG=false
+```
+
+### API Key Setup
+
+1. Visit [Google Cloud Console](https://console.developers.google.com/)
+2. Create/select project
+3. Enable YouTube Data API v3
+4. Create API Key credentials
+5. Add to `.env` file
+
+## 🚀 Deployment Guidelines
+
+### Local Development
+
+```bash
+# Install dependencies
+uv sync
+
+# Run tests
+uv run python test_server.py
+
+# Start server
+uv run python main.py
+```
+
+### Claude Desktop Integration
+
+```json
+{
+  "mcpServers": {
+    "youtube": {
+      "command": "uvx",
+      "args": [
+        "--from", 
+        "git+https://github.com/yourusername/youtube-mcp-server",
+        "youtube-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "your_youtube_api_key_here"
+      }
+    }
+  }
+}
+```
+
+## 📊 Performance & Limits
+
+### YouTube API Quota Management
+
+- **Default quota**: 10,000 units/day
+- **Search cost**: 100 units each
+- **Video details**: 1 unit per video
+- **Typical usage**: ~110 units per search+details operation
+- **Daily capacity**: ~90 comprehensive searches
+
+### Transcript API
+
+- **No quota limits** (uses separate service)
+- **Rate limiting**: Built-in respect for service limits
+- **Language support**: Automatic detection and fallback
+
+## 🔍 Debugging & Troubleshooting
+
+### Common Issues
+
+1. **API Key Problems**:
+   - Verify `YOUTUBE_API_KEY` in environment
+   - Check API key has YouTube Data API v3 enabled
+   - Ensure no IP/domain restrictions
+
+2. **Quota Exceeded**:
+   - Monitor daily usage in Google Cloud Console
+   - Implement caching for frequently accessed videos
+   - Consider quota increase if needed
+
+3. **Transcript Unavailable**:
+   - Not all videos have transcripts
+   - Some channels disable transcript access
+   - Language-specific availability varies
+
+### Logging
+
+The server includes comprehensive logging:
+- API errors with detailed messages
+- Schema validation failures
+- Performance metrics for API calls
+
+## ⚠️ Critical Don'ts
+
+1. **Never hardcode API keys** in source code
+2. **Never bypass input validation** - always validate against schemas
+3. **Never ignore API errors** - handle all YouTube API error responses
+4. **Never modify core MCP server structure** in `server.py`
+5. **Never skip testing** - all changes must pass full test suite
+
+## ✅ Best Practices
+
+1. **Always use async/await** for all tool functions
+2. **Validate inputs first** before making API calls
+3. **Handle errors gracefully** with meaningful messages
+4. **Follow established patterns** from existing tools
+5. **Update test cases** when adding new functionality
+6. **Document API changes** in tool schemas and README
+
+## 🔄 Maintenance
+
+### Regular Tasks
+
+- Monitor YouTube API quota usage
+- Update dependencies when new versions available
+- Review and update test cases for edge cases
+- Keep documentation synchronized with implementation
+
+### Version Updates
+
+When updating:
+1. Update version in `pyproject.toml`
+2. Run full test suite
+3. Update README if API changes
+4. Test Claude Desktop integration
+
+---
+
+This YouTube MCP Server provides a robust, production-ready integration with YouTube's APIs while following MCP best practices and maintaining comprehensive error handling and validation.

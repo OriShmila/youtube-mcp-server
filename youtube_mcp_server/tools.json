@@ -1,0 +1,311 @@
+{
+  "name": "YouTubeAPI",
+  "tools": [
+    {
+      "name": "search_videos",
+      "description": "Search for videos on YouTube",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Token for the next page of results",
+            "default": null
+          }
+        },
+        "required": ["query"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "YouTube search results",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "Array of video search results",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "type": "string" },
+                    "videoId": { "type": "string" }
+                  }
+                },
+                "snippet": {
+                  "type": "object",
+                  "properties": {
+                    "publishedAt": { "type": "string" },
+                    "channelId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "thumbnails": {
+                      "type": "object",
+                      "properties": {
+                        "default": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        },
+                        "medium": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        },
+                        "high": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        }
+                      }
+                    },
+                    "channelTitle": { "type": "string" },
+                    "liveBroadcastContent": { "type": "string" },
+                    "publishTime": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "Token for next page of results"
+          },
+          "prevPageToken": {
+            "type": "string",
+            "description": "Token for previous page of results"
+          },
+          "pageInfo": {
+            "type": "object",
+            "properties": {
+              "totalResults": { "type": "number" },
+              "resultsPerPage": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_videos",
+      "description": "Get detailed information about specific YouTube videos",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "List of video IDs to retrieve",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 50
+          },
+          "parts": {
+            "type": "array",
+            "description": "Parts of the video data to retrieve",
+            "default": ["snippet"],
+            "items": {
+              "type": "string",
+              "enum": [
+                "snippet",
+                "contentDetails",
+                "statistics",
+                "status",
+                "player",
+                "recordingDetails",
+                "fileDetails",
+                "processingDetails",
+                "suggestions",
+                "liveStreamingDetails",
+                "localizations",
+                "topicDetails"
+              ]
+            }
+          }
+        },
+        "required": ["ids"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "YouTube video details",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "Array of video details",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "type": "string" },
+                "etag": { "type": "string" },
+                "id": { "type": "string" },
+                "snippet": {
+                  "type": "object",
+                  "properties": {
+                    "publishedAt": { "type": "string" },
+                    "channelId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "thumbnails": {
+                      "type": "object",
+                      "properties": {
+                        "default": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        },
+                        "medium": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        },
+                        "high": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string" },
+                            "width": { "type": "number" },
+                            "height": { "type": "number" }
+                          }
+                        }
+                      }
+                    },
+                    "channelTitle": { "type": "string" },
+                    "tags": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "categoryId": { "type": "string" },
+                    "liveBroadcastContent": { "type": "string" },
+                    "defaultLanguage": { "type": "string" },
+                    "localized": {
+                      "type": "object",
+                      "properties": {
+                        "title": { "type": "string" },
+                        "description": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "contentDetails": {
+                  "type": "object",
+                  "properties": {
+                    "duration": { "type": "string" },
+                    "dimension": { "type": "string" },
+                    "definition": { "type": "string" },
+                    "caption": { "type": "string" },
+                    "licensedContent": { "type": "boolean" },
+                    "contentRating": { "type": "object" },
+                    "projection": { "type": "string" }
+                  }
+                },
+                "statistics": {
+                  "type": "object",
+                  "properties": {
+                    "viewCount": { "type": "string" },
+                    "likeCount": { "type": "string" },
+                    "dislikeCount": { "type": "string" },
+                    "favoriteCount": { "type": "string" },
+                    "commentCount": { "type": "string" }
+                  }
+                },
+                "status": {
+                  "type": "object",
+                  "properties": {
+                    "uploadStatus": { "type": "string" },
+                    "privacyStatus": { "type": "string" },
+                    "license": { "type": "string" },
+                    "embeddable": { "type": "boolean" },
+                    "publicStatsViewable": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "pageInfo": {
+            "type": "object",
+            "properties": {
+              "totalResults": { "type": "number" },
+              "resultsPerPage": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_transcript",
+      "description": "Get transcript for a specific YouTube video",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "videoId": {
+            "type": "string",
+            "description": "YouTube video ID to get transcript for"
+          },
+          "language": {
+            "type": "string",
+            "description": "Preferred language code (e.g., 'en', 'es', 'fr'). If not provided, tries English first, then any available.",
+            "default": null
+          }
+        },
+        "required": ["videoId"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Video transcript data",
+        "properties": {
+          "videoId": {
+            "type": "string",
+            "description": "The video ID"
+          },
+          "transcript": {
+            "type": "array",
+            "description": "Array of transcript segments",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "The transcript text"
+                },
+                "start": {
+                  "type": "number",
+                  "description": "Start time in seconds"
+                },
+                "duration": {
+                  "type": "number",
+                  "description": "Duration in seconds"
+                }
+              }
+            }
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Whether transcript is available for this video"
+          },
+          "language": {
+            "type": ["string", "null"],
+            "description": "Language of the transcript"
+          }
+        }
+      }
+    }
+  ]
+}
