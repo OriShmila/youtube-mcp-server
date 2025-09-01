@@ -250,7 +250,7 @@
       }
     },
     {
-      "name": "get_transcript",
+      "name": "get_video_transcript",
       "description": "Get transcript for a specific YouTube video",
       "inputSchema": {
         "type": "object",

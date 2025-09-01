@@ -157,8 +157,8 @@
       "should_succeed": true
     },
     {
-      "name": "test_get_transcript_valid_id",
-      "tool": "get_transcript",
+      "name": "test_get_video_transcript_valid_id",
+      "tool": "get_video_transcript",
       "arguments": {
         "videoId": "dQw4w9WgXcQ"
       },
@@ -167,8 +167,8 @@
       "should_succeed": true
     },
     {
-      "name": "test_get_transcript_with_language",
-      "tool": "get_transcript",
+      "name": "test_get_video_transcript_with_language",
+      "tool": "get_video_transcript",
       "arguments": {
         "videoId": "dQw4w9WgXcQ",
         "language": "en"
@@ -178,8 +178,8 @@
       "should_succeed": true
     },
     {
-      "name": "test_get_transcript_empty_id",
-      "tool": "get_transcript",
+      "name": "test_get_video_transcript_empty_id",
+      "tool": "get_video_transcript",
       "arguments": {
         "videoId": ""
       },
@@ -188,8 +188,8 @@
       "should_succeed": false
     },
     {
-      "name": "test_get_transcript_whitespace_id",
-      "tool": "get_transcript",
+      "name": "test_get_video_transcript_whitespace_id",
+      "tool": "get_video_transcript",
       "arguments": {
         "videoId": "   "
       },

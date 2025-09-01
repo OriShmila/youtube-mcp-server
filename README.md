@@ -51,7 +51,7 @@ Get detailed information about specific YouTube videos.
 
 **Returns:** Comprehensive video data including duration, view counts, like counts, descriptions, and more
 
-### 3. `get_transcript`
+### 3. `get_video_transcript`
 
 Extract video transcripts with intelligent language handling.
 
@@ -149,7 +149,7 @@ result = await get_videos(
 ### Fetch Transcript
 ```python
 # Get transcript in preferred language
-result = await get_transcript("dQw4w9WgXcQ", language="en")
+result = await get_video_transcript("dQw4w9WgXcQ", language="en")
 ```
 
 ## API Rate Limits

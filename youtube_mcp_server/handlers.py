@@ -200,7 +200,7 @@ async def get_videos(ids: List[str], parts: List[str] = None) -> Dict[str, Any]:
         raise ValueError(f"Unexpected error during video retrieval: {str(e)}")
 
 
-async def get_transcript(videoId: str, language: str = None) -> Dict[str, Any]:
+async def get_video_transcript(videoId: str, language: str = None) -> Dict[str, Any]:
     """
     Get transcript for a specific YouTube video.
 
@@ -319,5 +319,5 @@ async def get_transcript(videoId: str, language: str = None) -> Dict[str, Any]:
 TOOL_FUNCTIONS = {
     "search_videos": search_videos,
     "get_videos": get_videos,
-    "get_transcript": get_transcript,
+    "get_video_transcript": get_video_transcript,
 }

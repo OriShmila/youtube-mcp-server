@@ -24,7 +24,7 @@ youtube-mcp-server/
 
 1. **`search_videos`**: Search YouTube videos with pagination
 2. **`get_videos`**: Get detailed video information for specific IDs  
-3. **`get_transcript`**: Extract video transcripts with language prioritization
+3. **`get_video_transcript`**: Extract video transcripts with language prioritization
 
 ## 🔧 Development Guidelines
 
@@ -127,7 +127,7 @@ videos_response = youtube.videos().list(
 ).execute()
 ```
 
-### `get_transcript` Tool
+### `get_video_transcript` Tool
 
 **Purpose**: Extract video transcripts with intelligent language handling
 
